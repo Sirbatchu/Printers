@@ -1,0 +1,1 @@
+﻿get-service -computername hgs-print spooler | Restart-Service -force
