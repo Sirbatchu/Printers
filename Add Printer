@@ -1,0 +1,18 @@
+#Download file
+$clnt = new-object System.Net.WebClient
+$url = "https://download.support.xerox.com/pub/drivers/ALC80XX/drivers/win10x64/ar/AltaLinkC80xx_7.76.0.0_PCL6_x64.zip"
+$file = "c:\temp\AltaLinkC80xx_7.76.0.0_PCL6_x64.zip"
+$clnt.DownloadFile($url, $file)
+Start-Sleep 35
+
+#create directory & extract
+Expand-Archive c:\temp\AltaLinkC80xx_7.76.0.0_PCL6_x64.zip -DestinationPath c:\temp\PrintDrivers
+
+#Install Printer
+Invoke-Command {pnputil.exe -a "C:\Temp\PrintDrivers\XeroxAltaLinkC80xx_PCL6.inf" }
+Add-PrinterDriver -Name "Xerox AltaLink C8030 V4 PCL6"
+
+Add-PrinterPort -Name "IP_192.168.10.203_xeroxfinal" -PrinterHostAddress "192.168.10.203"
+Start-Sleep 10
+Add-Printer -Name "Xerox - 3rd floor" -ShareName "Xerox - 3rd floor"  -PortName IP_192.168.10.203_xeroxfinal -DriverName "Xerox AltaLink C8030 V4 PCL6"
+(New-Object -ComObject WScript.Network).SetDefaultPrinter('Xerox - 3rd floor')
